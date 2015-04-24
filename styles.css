@@ -34,10 +34,18 @@ div {
     box-shadow: 0px 0px 0px 1px #222222 inset;
     border-radius: 5px;
     cursor: pointer;
+
+    font-size: 40px;
+    vertical-align: auto;
+    text-align: center;
 }
 
 .boardCell:hover {
     background-color: #383838;
+}
+
+.dug {
+    background-color: #555555;
 }
 
 .xo {
@@ -51,6 +59,31 @@ div {
 
 .highlightBox {
     background-color: #444444;
+}
+
+.one {
+    color: #00AAC4; /*Blue*/
+}
+.two {
+    color: #77DD77; /*Green*/
+}
+.three {
+    color: #E43A20; /*Red*/
+}
+.four {
+    color: #2447B2; /*Dark Blue*/
+}
+.five {
+    color: #996633; /*Brown*/
+}
+.six {
+    color: #66FFFF; /*Cyan*/
+}
+.seven {
+    color: #FFFF99; /*Yellow*/
+}
+.eight {
+    color: #FF9900; /*Orange*/
 }
 
 #title {

@@ -1,9 +1,46 @@
 var boardSize = 10;
 var totalTurns = 0;
 
-var player = { 
+var player = {
     reveal: function(i, j) {
-        $('#box'+ i + j).html(board.gameBoard[i][j]);
+        $('#box' + i + j).addClass('dug');
+
+        if (board.gameBoard[i][j] === 'm') {
+            // Insert losing code
+            console.log('You lose');
+        } else if (board.gameBoard[i][j] === 0) {
+            // Insert autoclear function
+            return;
+        }
+
+        switch (board.gameBoard[i][j]) {
+            case 1:
+                $('#box' + i + j).addClass('one');
+                break;
+            case 2:
+                $('#box' + i + j).addClass('two');
+                break;
+            case 3:
+                $('#box' + i + j).addClass('three');
+                break;
+            case 4:
+                $('#box' + i + j).addClass('four');
+                break;
+            case 5:
+                $('#box' + i + j).addClass('five');
+                break;
+            case 6:
+                $('#box' + i + j).addClass('six');
+                break;
+            case 7:
+                $('#box' + i + j).addClass('seven');
+                break;
+            case 8:
+                $('#box' + i + j).addClass('eight');
+                break;
+        }
+
+        $('#box' + i + j).html(board.gameBoard[i][j]);
     }
 };
 
@@ -121,7 +158,7 @@ $(document).ready(function() {
     boardUI.createClickHandlers();
     board.createBoard(boardSize);
     board.createFreeSpaceArray(boardSize);
-    board.placeMines(20);
+    board.placeMines(33);
 
 
 });
