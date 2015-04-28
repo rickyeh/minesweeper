@@ -23,7 +23,6 @@ div {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-/*    box-shadow: 0px 0px 0px 1px #00BEA6 inset;*/
 }
 
 .boardCell {
@@ -40,12 +39,16 @@ div {
     text-align: center;
 }
 
-.boardCell:hover {
+.boardCellHover {
     background-color: #383838;
 }
 
 .dug {
     background-color: #555555;
+}
+
+.flag {
+    color: yellow;
 }
 
 .xo {

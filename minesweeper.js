@@ -1,12 +1,15 @@
 var boardSize = 10;
 var totalTurns = 0;
+var MINE = '*';
 
 var player = {
     reveal: function(i, j) {
         $('#box' + i + j).addClass('dug');
+        $('#box' + i + j).removeClass('boardCell:hover');
 
-        if (board.gameBoard[i][j] === 'm') {
+        if (board.gameBoard[i][j] === MINE) {
             // Insert losing code
+            $('#box' + i + j).css('background', 'red');
             console.log('You lose');
         } else if (board.gameBoard[i][j] === 0) {
             // Insert autoclear function
@@ -39,8 +42,11 @@ var player = {
                 $('#box' + i + j).addClass('eight');
                 break;
         }
-
-        $('#box' + i + j).html(board.gameBoard[i][j]);
+        $('#box' + i + j).text(board.gameBoard[i][j]);
+    },
+    flag: function(i, j) {
+        $('#box' + i + j).text('~');
+        $('#box' + i + j).addClass('flag');
     }
 };
 
@@ -59,16 +65,23 @@ var board = {
         }
     },
     createFreeSpaceArray: function(n) {
-        var temp;
-        var index;
 
         for (var i = 0; i < n; i++) {
             for (var j = 0; j < n; j++) {
-                this.freeSpaces.push(i.toString() + j.toString());
+                var obj = {
+                    row : i,
+                    col : j,
+                };
+
+                this.freeSpaces.push(obj);
             }
         }
-
-        var counter = this.freeSpaces.length;
+        this.freeSpaces = this.shuffleArray(this.freeSpaces);
+    },
+    shuffleArray: function (array) {
+        var temp;
+        var index;
+        var counter = array.length;
 
         // Shuffle the array
         while (counter > 0) {
@@ -76,37 +89,43 @@ var board = {
 
             counter--;
 
-            temp = this.freeSpaces[counter];
-            this.freeSpaces[counter] = this.freeSpaces[index];
-            this.freeSpaces[index] = temp;
+            temp = array[counter];
+            array[counter] = array[index];
+            array[index] = temp;
         }
-
+        return array;
     },
+
     placeMines: function(diff) {
         var numMines = Math.floor((boardSize * boardSize) * (diff / 100));
         var maxRows = boardSize - 1;
+        var rowSearch, colSearch;
+
 
         for (var i = 0; i < numMines ; i++) {
 
             // Shift out first available coordinate
             var mineCoordinate = this.freeSpaces.shift();   
            
-            var row = parseInt(mineCoordinate.charAt(0));      // Assign row to first character
-            var col = parseInt(mineCoordinate.charAt(1));      // Assign column to second character
+            var row = mineCoordinate.row;      // Assign row to first character
+            var col = mineCoordinate.col;      // Assign column to second character
 
-            board.gameBoard[row][col] = 'm';         // Place mine at row, col
+            board.gameBoard[row][col] = MINE;         // Place mine at row, col
 
             // Increment every number around it, unless another mine.
             // If this square is a number, increment.  Else ignore
             for (var j = -1; j < 2; j++) {
                 for (var k = -1; k < 2; k++) {
-                    if (row + j < 0 || row + j > maxRows) {
+                    rowSearch = row + j;
+                    colSearch = col + k;
+
+                    if (rowSearch < 0 || rowSearch > maxRows) {
                         continue;
-                    } else if (col + k < 0 || col + k > maxRows) {
+                    } else if (colSearch < 0 || colSearch > maxRows) {
                         continue;
                     } else {
-                        if (!isNaN(this.gameBoard[row + j][col + k])) {
-                            this.gameBoard[row + j][col + k] ++;
+                        if ((this.gameBoard[rowSearch][colSearch] !== MINE)) {
+                            this.gameBoard[rowSearch][colSearch]++;
                         }
                     }
                 }
@@ -130,18 +149,44 @@ var boardUI = {
     },
 
     createClickHandlers: function() {
-    // Create anonymous function to pass in the i to create closure
-        function createAnonFunction(i, j) {
-            var actionOnClick = function() {
-                player.reveal(i,j);
+    // Returns a handler function that is called when clicked.  Uses closure to pass in i, j
+        function createHandler(i, j) {
+            var handler = function(event) {
+                switch (event.which) {
+                    case 1:
+                    default:
+                        player.reveal(i,j);
+                        break;
+                    case 3:
+                        console.log('right mouse clicked');
+                        player.flag(i,j);
+                        break;
+                }
             };
-            return actionOnClick;
+            return handler;
+        }
+
+        function createHoverHandler(i, j) {
+            var handler = function() {
+                $('#box' + i + j).addClass('boardCellHover');
+            }
+            return handler;
+        }
+
+        function createDeHoverHandler(i, j) {
+            var handler = function() {
+                $('#box' + i + j).removeClass('boardCellHover');
+            }
+            return handler;
         }
 
         // Loop to initialize all board cell handlers
         for (var i = 0; i < boardSize; ++i) {
             for (var j = 0; j < boardSize; ++j) {
-                $('#box' + i + j).click(createAnonFunction(i, j));
+                var handler = createHandler(i, j);
+                $('#box' + i + j).mouseup(handler);
+                $('#box' + i + j).on('mouseover', createHoverHandler(i, j));
+                $('#box' + i + j).on('mouseout', createDeHoverHandler(i, j));
             }
         }
 
@@ -158,7 +203,7 @@ $(document).ready(function() {
     boardUI.createClickHandlers();
     board.createBoard(boardSize);
     board.createFreeSpaceArray(boardSize);
-    board.placeMines(33);
+    board.placeMines(21);
 
 
 });
