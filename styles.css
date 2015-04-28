@@ -88,6 +88,9 @@ div {
 .eight {
     color: #FF9900; /*Orange*/
 }
+.mine {
+    background-color: red;
+}
 
 #title {
     height: 150px;

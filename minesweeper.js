@@ -4,12 +4,18 @@ var MINE = '*';
 
 var player = {
     reveal: function(i, j) {
+        if (boardUI.isDisabled){
+            console.log('Game is over.  Please Restart');
+            return;
+        }
+
         $('#box' + i + j).addClass('dug');
         $('#box' + i + j).removeClass('boardCell:hover');
 
         if (board.gameBoard[i][j] === MINE) {
             // Insert losing code
-            $('#box' + i + j).css('background', 'red');
+            boardUI.isDisabled = true;
+            $('#box' + i + j).addClass('mine');
             console.log('You lose');
         } else if (board.gameBoard[i][j] === 0) {
             // Insert autoclear function
@@ -45,6 +51,11 @@ var player = {
         $('#box' + i + j).text(board.gameBoard[i][j]);
     },
     flag: function(i, j) {
+        if (boardUI.isDisabled){
+            console.log('Game is over.  Please Restart');
+            return;
+        }
+
         $('#box' + i + j).text('~');
         $('#box' + i + j).addClass('flag');
     }
@@ -149,17 +160,16 @@ var boardUI = {
     },
 
     createClickHandlers: function() {
-    // Returns a handler function that is called when clicked.  Uses closure to pass in i, j
+        // Returns a handler function that is called when clicked.  Uses closure to pass in i, j
         function createHandler(i, j) {
             var handler = function(event) {
                 switch (event.which) {
                     case 1:
                     default:
-                        player.reveal(i,j);
+                        player.reveal(i, j);
                         break;
                     case 3:
-                        console.log('right mouse clicked');
-                        player.flag(i,j);
+                        player.flag(i, j);
                         break;
                 }
             };
@@ -169,14 +179,14 @@ var boardUI = {
         function createHoverHandler(i, j) {
             var handler = function() {
                 $('#box' + i + j).addClass('boardCellHover');
-            }
+            };
             return handler;
         }
 
         function createDeHoverHandler(i, j) {
             var handler = function() {
                 $('#box' + i + j).removeClass('boardCellHover');
-            }
+            };
             return handler;
         }
 
@@ -191,9 +201,19 @@ var boardUI = {
         }
 
         // Reset button
-        // $('#resetButton').click(function() {
-        //     boardUI.resetGame();
-        // });
+        $('#resetButton').click(function() {
+            boardUI.resetGame();
+        });
+    },
+    resetGame: function() {
+        for (var i = 0; i < boardSize; ++i) {
+            for (var j = 0; j < boardSize; ++j) {
+                $('#box' + i + j).text('');
+                $('#box' + i + j).removeClass('dug');
+                $('#box' + i + j).removeClass('mine');
+                boardUI.isDisabled = false;
+            }
+        }
     }
 };
 
