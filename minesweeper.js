@@ -10,7 +10,6 @@ var player = {
         }
 
         $('#box' + i + j).addClass('dug');
-        $('#box' + i + j).removeClass('boardCell:hover');
 
         if (board.gameBoard[i][j] === MINE) {
             // Insert losing code
@@ -65,6 +64,11 @@ var board = {
     gameBoard : new Array(boardSize),
     freeSpaces : [],
 
+    initGame: function(difficulty) {
+        this.createBoard(boardSize);
+        this.createFreeSpaceArray(boardSize);
+        this.placeMines(21);
+    },
     createBoard: function(n) {
         for (var i = 0; i < n; i++) {
             this.gameBoard[i] = new Array(n);
@@ -76,6 +80,8 @@ var board = {
         }
     },
     createFreeSpaceArray: function(n) {
+
+        this.freeSpaces = [];  // Empty the freeSpaces array (in case of refresh)
 
         for (var i = 0; i < n; i++) {
             for (var j = 0; j < n; j++) {
@@ -209,22 +215,27 @@ var boardUI = {
         for (var i = 0; i < boardSize; ++i) {
             for (var j = 0; j < boardSize; ++j) {
                 $('#box' + i + j).text('');
-                $('#box' + i + j).removeClass('dug');
-                $('#box' + i + j).removeClass('mine');
+                $('#box' + i + j).removeClass('dug one two three four five six seven eight mine');
+                board.initGame();
                 boardUI.isDisabled = false;
             }
         }
     }
 };
 
+// For debugging purposes only.  Remove function after completed project.
+function revealAll() {
+    for (var i = 0; i < boardSize; ++i) {
+            for (var j = 0; j < boardSize; ++j) {
+                $('#box' + i + j).text(board.gameBoard[i][j]);
+            }
+        }
+}
+
 $(document).ready(function() {
 
     boardUI.createGrid(boardSize);
     boardUI.createClickHandlers();
-    board.createBoard(boardSize);
-    board.createFreeSpaceArray(boardSize);
-    board.placeMines(21);
-
-
+    board.initGame();
 });
 
