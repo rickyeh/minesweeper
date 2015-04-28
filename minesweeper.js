@@ -222,18 +222,16 @@ var boardUI = {
         }
     }
 };
-
 // For debugging purposes only.  Remove function after completed project.
 function revealAll() {
     for (var i = 0; i < boardSize; ++i) {
-            for (var j = 0; j < boardSize; ++j) {
-                $('#box' + i + j).text(board.gameBoard[i][j]);
-            }
+        for (var j = 0; j < boardSize; ++j) {
+            $('#box' + i + j).text(board.gameBoard[i][j]);
         }
+    }
 }
 
 $(document).ready(function() {
-
     boardUI.createGrid(boardSize);
     boardUI.createClickHandlers();
     board.initGame();
