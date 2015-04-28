@@ -1,12 +1,19 @@
 var boardSize = 10;
 var totalTurns = 0;
 var MINE = '*';
+var isFirstTurn = true;
+var NUM_MINES = 20;
 
 var player = {
     reveal: function(i, j) {
         if (boardUI.isDisabled){
             console.log('Game is over.  Please Restart');
             return;
+        }
+
+        if (isFirstTurn) {
+            board.initGame(i, j, NUM_MINES);
+            isFirstTurn = false;
         }
 
         $('#box' + i + j).addClass('dug');
@@ -64,10 +71,10 @@ var board = {
     gameBoard : new Array(boardSize),
     freeSpaces : [],
 
-    initGame: function(difficulty) {
+    initGame: function(i, j, difficulty) {
         this.createBoard(boardSize);
-        this.createFreeSpaceArray(boardSize);
-        this.placeMines(21);
+        this.createFreeSpaceArray(boardSize, i, j);
+        this.placeMines(difficulty);
     },
     createBoard: function(n) {
         for (var i = 0; i < n; i++) {
@@ -79,18 +86,21 @@ var board = {
             }
         }
     },
-    createFreeSpaceArray: function(n) {
+    createFreeSpaceArray: function(n, clickedI, clickedJ) {
 
         this.freeSpaces = [];  // Empty the freeSpaces array (in case of refresh)
 
         for (var i = 0; i < n; i++) {
             for (var j = 0; j < n; j++) {
-                var obj = {
-                    row : i,
-                    col : j,
-                };
-
-                this.freeSpaces.push(obj);
+                if (i === clickedI && j === clickedJ) {
+                    continue;
+                } else {
+                    var obj = {
+                        row : i,
+                        col : j,
+                    };
+                    this.freeSpaces.push(obj);
+                }
             }
         }
         this.freeSpaces = this.shuffleArray(this.freeSpaces);
@@ -215,8 +225,8 @@ var boardUI = {
         for (var i = 0; i < boardSize; ++i) {
             for (var j = 0; j < boardSize; ++j) {
                 $('#box' + i + j).text('');
-                $('#box' + i + j).removeClass('dug one two three four five six seven eight mine');
-                board.initGame();
+                $('#box' + i + j).attr('class', 'boardCell');
+                isFirstTurn = true;
                 boardUI.isDisabled = false;
             }
         }
@@ -234,6 +244,5 @@ function revealAll() {
 $(document).ready(function() {
     boardUI.createGrid(boardSize);
     boardUI.createClickHandlers();
-    board.initGame();
 });
 
