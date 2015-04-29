@@ -10,7 +10,7 @@ body {
     background-color: #222222;
     color: #FFFFFF;
     font-family: 'Playball',"Lucida Grande","Helvetica","Arial","Verdana","sans-serif";
-    text-shadow: 2px 2px 2px #111111;
+
 }
 
 div {
@@ -103,6 +103,7 @@ div {
     font-size: 48px;
     text-align: center;
     padding: 50px;
+    text-shadow: 2px 2px 2px #111111;
 }
 
 #boardWrapper {
@@ -135,7 +136,9 @@ div {
     cursor: pointer;
 }
 
-#diffMenu {
-
+#menuWrapper {
+    width: 130px;
+    margin-left: auto;
+    margin-right: auto;
 }
 

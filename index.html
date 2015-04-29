@@ -11,13 +11,15 @@
         <link rel="stylesheet" type="text/css" href="styles.css">
     </head>
     <body>
-        <div id='title'><span id='titleText'>Minesweeper</span></div>
-            <select id="diffMenu" autofocus="Normal">
+        <div id='title'>Minesweeper</div>
+            <div id='menuWrapper'>
+                <select id="diffMenu">
                 <option>Easy</option>
                 <option>Normal</option>
                 <option>Hard</option>
                 <option>Expert</option>
-            </select>
+                </select>
+            </div>
         <div id='boardWrapper'>
             <div id='gameBoard' oncontextmenu = "return false";></div>
         </div>

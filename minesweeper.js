@@ -71,9 +71,9 @@ var board = {
     gameBoard : new Array(boardSize),
     freeSpaces : [],
 
-    initGame: function(i, j, difficulty) {
+    initGame: function(clickedRow, clickedCol, difficulty) {
         this.createBoard(boardSize);
-        this.createFreeSpaceArray(boardSize, i, j);
+        this.createFreeSpaceArray(boardSize, clickedRow, clickedCol);
         this.placeMines(difficulty);
     },
     createBoard: function(n) {
@@ -86,13 +86,13 @@ var board = {
             }
         }
     },
-    createFreeSpaceArray: function(n, clickedI, clickedJ) {
+    createFreeSpaceArray: function(n, clickedRow, clickedCol) {
 
         this.freeSpaces = [];  // Empty the freeSpaces array (in case of refresh)
 
         for (var i = 0; i < n; i++) {
             for (var j = 0; j < n; j++) {
-                if (i === clickedI && j === clickedJ) {
+                if (i === clickedRow && j === clickedCol) {
                     continue;
                 } else {
                     var obj = {
