@@ -15,7 +15,6 @@ body {
 
 div {
     position: relative;
-    height: 200px;
     box-sizing: border-box;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -59,6 +58,13 @@ div {
     transform: translate(-50%, -50%);
     -webkit-transform: translate(-50%, -50%);
 }
+
+/*#diffMenu {
+    position: absolute;
+    right: 10px;
+    height: 100px;
+    top: 20px;
+}*/
 
 .highlightBox {
     background-color: #444444;
@@ -119,17 +125,17 @@ div {
 }
 
 #resetButton {
-    position: absolute;
+    position: relative;
     height: 50px;
     width: 50px;
     top: 12.5px;
-    left: 10px;
+    margin-left:auto;
+    margin-right: auto;
+/*    left: 10px;*/
     cursor: pointer;
 }
 
-#diffSelect {
-    position: absolute;
-    right: 10px;
-    height: 40px;
-    top: 20px;
+#diffMenu {
+
 }
+

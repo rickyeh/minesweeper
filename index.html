@@ -4,11 +4,20 @@
     <head>
         <title>Minesweeper</title>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
         <script type="text/javascript" src="minesweeper.js"></script>
+        <script type="text/javascript" src="fancySelect.js"></script>
+        <link rel="stylesheet" type="text/css" href="fancySelect.css">
         <link rel="stylesheet" type="text/css" href="styles.css">
     </head>
     <body>
         <div id='title'><span id='titleText'>Minesweeper</span></div>
+            <select id="diffMenu" autofocus="Normal">
+                <option>Easy</option>
+                <option>Normal</option>
+                <option>Hard</option>
+                <option>Expert</option>
+            </select>
         <div id='boardWrapper'>
             <div id='gameBoard' oncontextmenu = "return false";></div>
         </div>
@@ -19,12 +28,6 @@
                     </path>
                 </svg>
             </div>
-            <select id="diffSelect">
-                <option>Easy</option>
-                <option>Normal</option>
-                <option>Hard</option>
-                <option>Expert</option>
-            </select>
         </div>
     </body>
 </html>

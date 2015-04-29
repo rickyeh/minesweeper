@@ -244,5 +244,6 @@ function revealAll() {
 $(document).ready(function() {
     boardUI.createGrid(boardSize);
     boardUI.createClickHandlers();
+    $('#diffMenu').fancySelect();
 });
 
