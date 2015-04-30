@@ -20,12 +20,10 @@ var player = {
         $('#box' + i + j).off('mouseup');
 
         if (board.gameBoard[i][j] === MINE) {
-            // Insert losing code
             boardUI.isDisabled = true;
             console.log('You lose');
+            $('#box' + i + j).addClass('mine');
             boardUI.showAllMines();
-            // $('#box' + i + j).addClass('mine');
-            // $('#box' + i + j).text(board.gameBoard[i][j]);
             return;
         } 
 
@@ -245,8 +243,9 @@ var boardUI = {
         for (var i = 0; i < boardSize; ++i) {
             for (var j = 0; j < boardSize; ++j) {
                 if (board.gameBoard[i][j] == MINE){
-                    $('#box' + i + j).text(board.gameBoard[i][j]);
-                    $('#box' + i + j).addClass('mine');
+                    // $('#box' + i + j).text(board.gameBoard[i][j]);
+                    $('#box' + i + j).prepend('<img class="minePNG" src="img/mine.png" />');
+
                 }
             }
         }

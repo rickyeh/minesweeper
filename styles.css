@@ -98,6 +98,17 @@ div {
     background-color: red;
 }
 
+.minePNG {
+    height: 75%;
+    width: 75%;
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
+}
+
 #title {
     height: 120px;
     font-size: 48px;
