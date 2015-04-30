@@ -1,6 +1,6 @@
 var boardSize = 10;
-var numOfCells = boardSize * boardSize;
-var totalTurns = 0;
+var numCells = boardSize * boardSize;
+var numCellsRevealed = 0;
 var MINE = '*';
 var isFirstTurn = true;
 
@@ -17,13 +17,15 @@ var player = {
         }
 
         $('#box' + i + j).addClass('dug');
+        $('#box' + i + j).off('mouseup');
 
         if (board.gameBoard[i][j] === MINE) {
             // Insert losing code
             boardUI.isDisabled = true;
-            $('#box' + i + j).addClass('mine');
             console.log('You lose');
-            $('#box' + i + j).text(board.gameBoard[i][j]);
+            boardUI.showAllMines();
+            // $('#box' + i + j).addClass('mine');
+            // $('#box' + i + j).text(board.gameBoard[i][j]);
             return;
         } 
 
@@ -70,9 +72,10 @@ var player = {
         $('#box' + i + j).addClass('flag');
     },
     checkVictory: function() {
-        totalTurns++;
+        numCellsRevealed++;
+        console.log(numCellsRevealed);
 
-        if ( totalTurns === (numOfCells - board.numOfMines) ) {
+        if ( numCellsRevealed === (numCells - board.numMines) ) {
             console.log('You Won!');
             boardUI.isDisabled = true;
         }
@@ -82,15 +85,15 @@ var player = {
 var board = {
     gameBoard : new Array(boardSize),
     freeSpaces : [],
-    numOfMines : 0,
+    numMines : 0,
 
     initGame: function(clickedRow, clickedCol) {
 
-        this.numOfMines = Math.floor((parseInt($('#diffMenu').val()) / 100) * numOfCells);
+        this.numMines = Math.floor((parseInt($('#diffMenu').val()) / 100) * numCells);
 
         this.createBoard(boardSize);
         this.createFreeSpaceArray(boardSize, clickedRow, clickedCol);
-        this.placeMines(this.numOfMines);
+        this.placeMines(this.numMines);
     },
     createBoard: function(n) {
         for (var i = 0; i < n; i++) {
@@ -224,7 +227,7 @@ var boardUI = {
         for (var i = 0; i < boardSize; ++i) {
             for (var j = 0; j < boardSize; ++j) {
                 var handler = createHandler(i, j);
-                $('#box' + i + j).mouseup(handler);
+                $('#box' + i + j).on('mouseup', handler);
                 $('#box' + i + j).on('mouseover', createHoverHandler(i, j));
                 $('#box' + i + j).on('mouseout', createDeHoverHandler(i, j));
             }
@@ -237,18 +240,31 @@ var boardUI = {
     },
     initSelectors: function() {
         $('#diffMenu').fancySelect();
-        
-
     },
-    resetGame: function() {
+    showAllMines: function() {
         for (var i = 0; i < boardSize; ++i) {
             for (var j = 0; j < boardSize; ++j) {
+                if (board.gameBoard[i][j] == MINE){
+                    $('#box' + i + j).text(board.gameBoard[i][j]);
+                    $('#box' + i + j).addClass('mine');
+                }
+            }
+        }
+    },
+    resetGame: function() {
+        numCellsRevealed = 0;
+
+        for (var i = 0; i < boardSize; ++i) {
+            for (var j = 0; j < boardSize; ++j) {
+                $('#box' + i + j).off();
                 $('#box' + i + j).text('');
                 $('#box' + i + j).attr('class', 'boardCell');
                 isFirstTurn = true;
                 boardUI.isDisabled = false;
             }
         }
+
+        boardUI.createClickHandlers();
     }
 };
 // For debugging purposes only.  Remove function after completed project.
