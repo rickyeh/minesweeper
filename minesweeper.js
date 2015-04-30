@@ -2,23 +2,30 @@ var boardSize = 10;
 var numCells = boardSize * boardSize;
 var numCellsRevealed = 0;
 var MINE = '*';
-var isFirstTurn = true;
 
+// Object that represents the player.
 var player = {
+    isFirstTurn: true,
+
+    // Method called when player clicks on a cell.  Reveals the cell
     reveal: function(i, j) {
+
+        // Check if board is disabled by loss/victory.  Do nothing if true.
         if (boardUI.isDisabled){
             console.log('Game is over.  Please Restart');
             return;
         }
 
-        if (isFirstTurn) {
+        // If this reveal is the first turn, initialize the game and generate the board
+        if (this.isFirstTurn) {
             board.initGame(i, j);
-            isFirstTurn = false;
+            this.isFirstTurn = false;
         }
 
         $('#box' + i + j).addClass('dug');
         $('#box' + i + j).off('mouseup');
 
+        // If the clicked cell is a mine, player loses, all mines are shown
         if (board.gameBoard[i][j] === MINE) {
             boardUI.isDisabled = true;
             console.log('You lose');
@@ -60,16 +67,20 @@ var player = {
             $('#box' + i + j).text(board.gameBoard[i][j]);
             player.checkVictory();
     },
+
+    // Method called when player right clicks
     flag: function(i, j) {
         if (boardUI.isDisabled){
             console.log('Game is over.  Please Restart');
             return;
         }
 
-        // $('#box' + i + j).text('~');
+        // Inserts flag icon
         $('#box' + i + j).prepend('<img class="icons" src="img/flag.png" />');
         $('#box' + i + j).addClass('flag');
     },
+
+    // Method that checks for a victory everytime a cell is successfully cleared
     checkVictory: function() {
         numCellsRevealed++;
         console.log(numCellsRevealed);
@@ -81,6 +92,7 @@ var player = {
     }
 };
 
+// Object to represent the board data
 var board = {
     gameBoard : new Array(boardSize),
     freeSpaces : [],
@@ -177,8 +189,10 @@ var board = {
     }
 };
 
+// Object to represent the board's UI
 var boardUI = {
 
+    // Flag that toggles the board's clickability.
     isDisabled: false,
 
     // Double for loop to insert HTML for grid creation
@@ -240,6 +254,13 @@ var boardUI = {
     initSelectors: function() {
         $('#diffMenu').fancySelect();
     },
+    preloadImages: function() {
+        var img1 = new Image();
+        var img2 = new Image();
+
+        img1.src = 'img/flag.png';
+        img2.src = 'img/mine.png';
+    },
     showAllMines: function() {
         for (var i = 0; i < boardSize; ++i) {
             for (var j = 0; j < boardSize; ++j) {
@@ -258,7 +279,7 @@ var boardUI = {
                 $('#box' + i + j).off();
                 $('#box' + i + j).text('');
                 $('#box' + i + j).attr('class', 'boardCell');
-                isFirstTurn = true;
+                player.isFirstTurn = true;
                 boardUI.isDisabled = false;
             }
         }
@@ -279,5 +300,6 @@ $(document).ready(function() {
     boardUI.initSelectors();
     boardUI.createGrid(boardSize);
     boardUI.createClickHandlers();
+    boardUI.preloadImages();
 });
 
