@@ -1,16 +1,7 @@
-/*
-    0h h1 colors
-    #00AAC4 - Blue
-    #008A9B - Blue Shadow
-    #E43A20 - Red
-    #B33215 - Red Shadow
-*/
-
 body {
     background-color: #222222;
     color: #FFFFFF;
-    font-family: 'Playball',"Lucida Grande","Helvetica","Arial","Verdana","sans-serif";
-
+    font-family: "Lucida Grande","Helvetica","Arial","Verdana","sans-serif";
 }
 
 div {
@@ -59,13 +50,6 @@ div {
     -webkit-transform: translate(-50%, -50%);
 }
 
-/*#diffMenu {
-    position: absolute;
-    right: 10px;
-    height: 100px;
-    top: 20px;
-}*/
-
 .highlightBox {
     background-color: #444444;
 }
@@ -98,7 +82,7 @@ div {
     background-color: red;
 }
 
-.minePNG {
+.icons {
     height: 75%;
     width: 75%;
     margin: 0;
@@ -143,7 +127,6 @@ div {
     top: 12.5px;
     margin-left:auto;
     margin-right: auto;
-/*    left: 10px;*/
     cursor: pointer;
 }
 

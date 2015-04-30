@@ -66,7 +66,8 @@ var player = {
             return;
         }
 
-        $('#box' + i + j).text('~');
+        // $('#box' + i + j).text('~');
+        $('#box' + i + j).prepend('<img class="icons" src="img/flag.png" />');
         $('#box' + i + j).addClass('flag');
     },
     checkVictory: function() {
@@ -243,9 +244,8 @@ var boardUI = {
         for (var i = 0; i < boardSize; ++i) {
             for (var j = 0; j < boardSize; ++j) {
                 if (board.gameBoard[i][j] == MINE){
-                    // $('#box' + i + j).text(board.gameBoard[i][j]);
-                    $('#box' + i + j).prepend('<img class="minePNG" src="img/mine.png" />');
-
+                    $('#box' + i + j).text('');
+                    $('#box' + i + j).prepend('<img class="icons" src="img/mine.png" />');
                 }
             }
         }
