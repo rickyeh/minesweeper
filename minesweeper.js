@@ -1,8 +1,8 @@
 var boardSize = 10;
+var numOfCells = boardSize * boardSize;
 var totalTurns = 0;
 var MINE = '*';
 var isFirstTurn = true;
-var NUM_MINES = 20;
 
 var player = {
     reveal: function(i, j) {
@@ -12,7 +12,7 @@ var player = {
         }
 
         if (isFirstTurn) {
-            board.initGame(i, j, NUM_MINES);
+            board.initGame(i, j);
             isFirstTurn = false;
         }
 
@@ -23,12 +23,15 @@ var player = {
             boardUI.isDisabled = true;
             $('#box' + i + j).addClass('mine');
             console.log('You lose');
-        } else if (board.gameBoard[i][j] === 0) {
-            // Insert autoclear function
+            $('#box' + i + j).text(board.gameBoard[i][j]);
             return;
-        }
+        } 
 
         switch (board.gameBoard[i][j]) {
+            case 0:
+                //Insert autoclear function
+                player.checkVictory();
+                return;
             case 1:
                 $('#box' + i + j).addClass('one');
                 break;
@@ -54,7 +57,8 @@ var player = {
                 $('#box' + i + j).addClass('eight');
                 break;
         }
-        $('#box' + i + j).text(board.gameBoard[i][j]);
+            $('#box' + i + j).text(board.gameBoard[i][j]);
+            player.checkVictory();
     },
     flag: function(i, j) {
         if (boardUI.isDisabled){
@@ -64,17 +68,29 @@ var player = {
 
         $('#box' + i + j).text('~');
         $('#box' + i + j).addClass('flag');
+    },
+    checkVictory: function() {
+        totalTurns++;
+
+        if ( totalTurns === (numOfCells - board.numOfMines) ) {
+            console.log('You Won!');
+            boardUI.isDisabled = true;
+        }
     }
 };
 
 var board = {
     gameBoard : new Array(boardSize),
     freeSpaces : [],
+    numOfMines : 0,
 
-    initGame: function(clickedRow, clickedCol, difficulty) {
+    initGame: function(clickedRow, clickedCol) {
+
+        this.numOfMines = Math.floor((parseInt($('#diffMenu').val()) / 100) * numOfCells);
+
         this.createBoard(boardSize);
         this.createFreeSpaceArray(boardSize, clickedRow, clickedCol);
-        this.placeMines(difficulty);
+        this.placeMines(this.numOfMines);
     },
     createBoard: function(n) {
         for (var i = 0; i < n; i++) {
@@ -123,11 +139,9 @@ var board = {
         return array;
     },
 
-    placeMines: function(diff) {
-        var numMines = Math.floor((boardSize * boardSize) * (diff / 100));
+    placeMines: function(numMines) {
         var maxRows = boardSize - 1;
         var rowSearch, colSearch;
-
 
         for (var i = 0; i < numMines ; i++) {
 
@@ -221,6 +235,11 @@ var boardUI = {
             boardUI.resetGame();
         });
     },
+    initSelectors: function() {
+        $('#diffMenu').fancySelect();
+        
+
+    },
     resetGame: function() {
         for (var i = 0; i < boardSize; ++i) {
             for (var j = 0; j < boardSize; ++j) {
@@ -242,8 +261,8 @@ function revealAll() {
 }
 
 $(document).ready(function() {
+    boardUI.initSelectors();
     boardUI.createGrid(boardSize);
     boardUI.createClickHandlers();
-    $('#diffMenu').fancySelect();
 });
 

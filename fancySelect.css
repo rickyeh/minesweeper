@@ -34,7 +34,7 @@ div.fancy-select div.trigger {
 	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 	width: 130px;
 	height: 40px;
-	margin: 0px auto 60px auto;
+	margin: 0px auto 30px auto;
 
 	transition: all 240ms ease-out;
 	-webkit-transition: all 240ms ease-out;
