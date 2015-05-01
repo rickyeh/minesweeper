@@ -78,6 +78,8 @@ var player = {
         // Inserts flag icon
         $('#box' + i + j).prepend('<img class="icons" src="img/flag.png" />');
         $('#box' + i + j).addClass('flag');
+        boardUI.flagCounter--;
+        $('#flagCounter').text(boardUI.flagCounter);
     },
 
     // Method that checks for a victory everytime a cell is successfully cleared
@@ -99,9 +101,7 @@ var board = {
     numMines : 0,
 
     initGame: function(clickedRow, clickedCol) {
-
-        this.numMines = Math.floor((parseInt($('#diffMenu').val()) / 100) * numCells);
-
+        this.numMines = this.getNumMines();
         this.createBoard(boardSize);
         this.createFreeSpaceArray(boardSize, clickedRow, clickedCol);
         this.placeMines(this.numMines);
@@ -134,6 +134,9 @@ var board = {
             }
         }
         this.freeSpaces = this.shuffleArray(this.freeSpaces);
+    },
+    getNumMines: function() {
+        return Math.floor((parseInt($('#diffMenu').val()) / 100) * numCells);
     },
     shuffleArray: function (array) {
         var temp;
@@ -194,6 +197,7 @@ var boardUI = {
 
     // Flag that toggles the board's clickability.
     isDisabled: false,
+    flagCounter: 20,
 
     // Double for loop to insert HTML for grid creation
     createGrid: function(n) {
@@ -224,6 +228,8 @@ var boardUI = {
                         if ($('#box' + i + j).hasClass('flag') && boardUI.isDisabled === false) {
                             $('#box' + i + j).removeClass('flag');
                             $('#box' + i + j).text('');
+                            boardUI.flagCounter++;
+                            $('#flagCounter').text(boardUI.flagCounter);                       
                         } else {
                             player.flag(i, j);
                         }
@@ -263,6 +269,7 @@ var boardUI = {
     },
     initSelectors: function() {
         $('#diffMenu').fancySelect();
+        board.getNumMines();
     },
     preloadImages: function() {
         var img1 = new Image();
@@ -295,6 +302,9 @@ var boardUI = {
         }
 
         boardUI.createClickHandlers();
+        board.numMines = board.getNumMines();
+        boardUI.flagCounter = board.numMines;
+        $('#flagCounter').text(boardUI.flagCounter);
     }
 };
 // For debugging purposes only.  Remove function after completed project.
