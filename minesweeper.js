@@ -210,12 +210,23 @@ var boardUI = {
         function createHandler(i, j) {
             var handler = function(event) {
                 switch (event.which) {
-                    case 1:
+                    case 1:  // Left Click
                     default:
-                        player.reveal(i, j);
+                        // If cell is flagged, do not reveal cell.
+                        if ($('#box' + i + j).hasClass('flag')){
+                            // Do nothing
+                        } else {
+                            player.reveal(i, j);
+                        }
                         break;
-                    case 3:
-                        player.flag(i, j);
+                    case 3:  // Right Click
+                        // If cell is flagged, unflag.
+                        if ($('#box' + i + j).hasClass('flag')) {
+                            $('#box' + i + j).removeClass('flag');
+                            $('#box' + i + j).text('');
+                        } else {
+                            player.flag(i, j);
+                        }
                         break;
                 }
             };
@@ -239,8 +250,7 @@ var boardUI = {
         // Loop to initialize all board cell handlers
         for (var i = 0; i < boardSize; ++i) {
             for (var j = 0; j < boardSize; ++j) {
-                var handler = createHandler(i, j);
-                $('#box' + i + j).on('mouseup', handler);
+                $('#box' + i + j).on('mouseup', createHandler(i, j));
                 $('#box' + i + j).on('mouseover', createHoverHandler(i, j));
                 $('#box' + i + j).on('mouseout', createDeHoverHandler(i, j));
             }
