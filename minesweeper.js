@@ -19,6 +19,7 @@ var player = {
         // If this reveal is the first turn, initialize the game and generate the board
         if (this.isFirstTurn) {
             board.initGame(i, j);
+            revealAll();
             this.isFirstTurn = false;
         }
 
@@ -269,7 +270,10 @@ var boardUI = {
     },
     initSelectors: function() {
         $('#diffMenu').fancySelect();
-        board.getNumMines();
+        
+        $('#diffMenu').fancySelect().on('change.fs', function() {
+            boardUI.resetGame();
+        });
     },
     preloadImages: function() {
         var img1 = new Image();
