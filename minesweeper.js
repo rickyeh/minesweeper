@@ -221,7 +221,7 @@ var boardUI = {
                         break;
                     case 3:  // Right Click
                         // If cell is flagged, unflag.
-                        if ($('#box' + i + j).hasClass('flag')) {
+                        if ($('#box' + i + j).hasClass('flag') && boardUI.isDisabled === false) {
                             $('#box' + i + j).removeClass('flag');
                             $('#box' + i + j).text('');
                         } else {
