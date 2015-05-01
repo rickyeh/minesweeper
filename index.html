@@ -12,19 +12,22 @@
     </head>
     <body>
         <div id='title'>Minesweeper</div>
-            <div id='menuWrapper'>
-                <select id="diffMenu">
-                    <option value="15" >Easy</option>
-                    <option selected="selected" value="20" >Normal</option>
-                    <option value="23">Hard</option>
-                    <option value="27">Expert</option>
-                </select>
+            <div id='topBar'>
+                <div id='flagCounter'>00</div>
+                <div id='menuWrapper'>
+                    <select id="diffMenu">
+                        <option value="15" >Easy</option>
+                        <option selected="selected" value="20" >Normal</option>
+                        <option value="23">Hard</option>
+                        <option value="27">Expert</option>
+                    </select>
+                </div>
             </div>
         <div id='boardWrapper'>
             <div id='gameBoard' oncontextmenu = "return false";></div>
         </div>
         <div id='iconsWrapper'>
-            <div id='resetButton' class='icon'>
+            <div id='resetButton'>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
                     <path d="M16 2 A14 14 0 0 0 2 16 A14 14 0 0 0 16 30 A14 14 0 0 0 26 26 L 23.25 23 A10 10 0 0 1 16 26 A10 10 0 0 1 6 16 A10 10 0 0 1 16 6 A10 10 0 0 1 23.25 9 L19 13 L30 13 L30 2 L26 6 A14 14 0 0 0 16 2 " fill="white">
                     </path>

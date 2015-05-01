@@ -112,27 +112,47 @@ div {
     margin-right: auto;
 }
 
+#topBar {
+    width: 500px;
+    height: 40px;
+    margin: auto;
+    margin-bottom: 15px;
+}
+
+#menuWrapper {
+    position: absolute;
+    width: 130px;
+    right: 0;
+}
+
+#flagCounter {
+    position: absolute;
+    height: 40px;
+    width: 130px;
+    left: 0;
+    background-color: #52585F;
+    padding: 10px 24px 9px 50px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 18px;
+    color: #DEDEDE;
+}
+
 #iconsWrapper {
     position: relative;
     height: 75px;
-    width: 200px;
+    width: 500px;
     margin-left: auto;
     margin-right: auto;
 }
 
 #resetButton {
-    position: relative;
+    position: absolute;
     height: 50px;
     width: 50px;
-    top: 12.5px;
-    margin-left:auto;
-    margin-right: auto;
+    margin: auto;
+    top: 0; left: 0; bottom: 0; right: 0;
     cursor: pointer;
 }
 
-#menuWrapper {
-    width: 130px;
-    margin-left: auto;
-    margin-right: auto;
-}
 

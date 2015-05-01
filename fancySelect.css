@@ -11,7 +11,7 @@ div.fancy-select.disabled {
 }
 
 div.fancy-select select:focus + div.trigger {
-	box-shadow: 0 0 0 2px #4B5468;
+/*	box-shadow: 0 0 0 2px #4B5468;*/
 }
 
 div.fancy-select select:focus + div.trigger.open {
