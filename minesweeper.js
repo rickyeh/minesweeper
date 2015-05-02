@@ -90,6 +90,7 @@ var player = {
 
         if ( numCellsRevealed === (numCells - board.numMines) ) {
             console.log('You Won!');
+            swal(boardUI.winAlert);
             boardUI.isDisabled = true;
         }
     },
@@ -108,7 +109,7 @@ var player = {
                     continue;
                 } else if (colSearch < 0 || colSearch > maxRows) {
                     continue;
-                } else if (i == 0 && j == 0) {
+                } else if (i === 0 && j === 0) {
                     continue;
                 } else if ($('#box' + rowSearch + colSearch).hasClass('dug')) {
                     continue;
@@ -224,6 +225,14 @@ var boardUI = {
     isDisabled: false,
     flagCounter: 20,
 
+    // SweetAlert object for winning alert
+    winAlert: {
+        title: 'Woot!',
+        text: 'Congratulations, you win!  Click refresh or select another difficulty level!',
+        imageUrl: 'img/smiley.png',
+        confirmButtonText: 'Okay'
+    },
+
     // Double for loop to insert HTML for grid creation
     createGrid: function(n) {
         for (var i = 0; i < n; ++i) {
@@ -298,7 +307,18 @@ var boardUI = {
         
         // On change in difficulty, the board is reloaded.
         $('#diffMenu').fancySelect().on('change.fs', function() {
-            boardUI.resetGame();
+            if (!player.isFirstTurn) {
+                swal({
+                    title: "Are you sure?",
+                    text: "Game will reset and you will lose all progress.",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Yes, I'm sure!",
+                }, function() {
+                    boardUI.resetGame();
+                });
+            }
         });
     },
     preloadImages: function() {
@@ -338,13 +358,13 @@ var boardUI = {
     }
 };
 // For debugging purposes only.  Remove function after completed project.
-function revealAll() {
-    for (var i = 0; i < boardSize; ++i) {
-        for (var j = 0; j < boardSize; ++j) {
-            $('#box' + i + j).text(board.gameBoard[i][j]);
-        }
-    }
-}
+// function revealAll() {
+//     for (var i = 0; i < boardSize; ++i) {
+//         for (var j = 0; j < boardSize; ++j) {
+//             $('#box' + i + j).text(board.gameBoard[i][j]);
+//         }
+//     }
+// }
 
 $(document).ready(function() {
     boardUI.initSelectors();

@@ -1,0 +1,33 @@
+FloodFill Notes
+
+10 If the cell revealed is 0, reveal every other adjacent cell, if they exist and are hidden.
+20   If a revealed cell is 0, do the same thing (Reveal every other adjacent cell, except revealed cells)
+21      Go to Line 10 
+30 else If cell is non-zero, do nothing
+40 
+50
+
+Make sure to not process already revealed tiles.
+
+Depth first search vs. breadth first search.  Either recursion or data structures.
+
+
+
+Queue
+
+If the cell revealed is 0, reveal every other adjacent cell, if they exist and are hidden.
+    If revealed is 0
+
+
+Reveal starting cell.
+If 0, reveal surrounding cells.
+While any new cells revealed are 0, continue.
+
+var q = [];
+q.push(startCell);
+while (q.length > 0) {
+    var currCell =  q.shift();
+    reveal(currCell);
+    if currCell == 0,
+        q.push(surroundingUnopenedCells); - make function that adds unopened adjacent cells to queue.
+}
