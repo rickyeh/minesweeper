@@ -2,6 +2,7 @@ var boardSize = 10;
 var numCells = boardSize * boardSize;
 var numCellsRevealed = 0;
 var MINE = '*';
+var maxRows = boardSize - 1;
 
 // Object that represents the player.
 var player = {
@@ -19,7 +20,6 @@ var player = {
         // If this reveal is the first turn, initialize the game and generate the board
         if (this.isFirstTurn) {
             board.initGame(i, j);
-            revealAll();
             this.isFirstTurn = false;
         }
 
@@ -37,7 +37,7 @@ var player = {
 
         switch (board.gameBoard[i][j]) {
             case 0:
-                //Insert autoclear function
+                player.autoClear(i, j);
                 player.checkVictory();
                 return;
             case 1:
@@ -91,6 +91,31 @@ var player = {
         if ( numCellsRevealed === (numCells - board.numMines) ) {
             console.log('You Won!');
             boardUI.isDisabled = true;
+        }
+    },
+    autoClear: function(row, col) {
+
+        var rowSearch, colSearch;
+
+        // Loops through each direction to reveal all adjacent cells.
+        // Ignores rows and cols beyond the borders, and cell itself, and anything already revealed
+        for (var i = -1; i < 2; i++) {
+            for (var j = -1; j < 2; j++) {
+                rowSearch = row + i;
+                colSearch = col + j;
+
+                if (rowSearch < 0 || rowSearch > maxRows) {
+                    continue;
+                } else if (colSearch < 0 || colSearch > maxRows) {
+                    continue;
+                } else if (i == 0 && j == 0) {
+                    continue;
+                } else if ($('#box' + rowSearch + colSearch).hasClass('dug')) {
+                    continue;
+                } else {
+                    player.reveal(rowSearch, colSearch);
+                }
+            }
         }
     }
 };
@@ -158,7 +183,6 @@ var board = {
     },
 
     placeMines: function(numMines) {
-        var maxRows = boardSize - 1;
         var rowSearch, colSearch;
 
         for (var i = 0; i < numMines ; i++) {
@@ -269,8 +293,10 @@ var boardUI = {
         });
     },
     initSelectors: function() {
+        // Initialize fancy select box
         $('#diffMenu').fancySelect();
         
+        // On change in difficulty, the board is reloaded.
         $('#diffMenu').fancySelect().on('change.fs', function() {
             boardUI.resetGame();
         });
