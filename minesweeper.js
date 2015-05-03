@@ -12,7 +12,7 @@ var player = {
     reveal: function(i, j) {
 
         // Check if board is disabled by loss/victory.  Do nothing if true.
-        if (boardUI.isDisabled){
+        if (boardUI.isDisabled) {
             console.log('Game is over.  Please Restart');
             return;
         }
@@ -33,7 +33,7 @@ var player = {
             $('#box' + i + j).addClass('mine');
             boardUI.showAllMines();
             return;
-        } 
+        }
 
         switch (board.gameBoard[i][j]) {
             case 0:
@@ -65,13 +65,13 @@ var player = {
                 $('#box' + i + j).addClass('eight');
                 break;
         }
-            $('#box' + i + j).text(board.gameBoard[i][j]);
-            player.checkVictory();
+        $('#box' + i + j).text(board.gameBoard[i][j]);
+        player.checkVictory();
     },
 
     // Method called when player right clicks
     flag: function(i, j) {
-        if (boardUI.isDisabled){
+        if (boardUI.isDisabled) {
             console.log('Game is over.  Please Restart');
             return;
         }
@@ -88,7 +88,7 @@ var player = {
         numCellsRevealed++;
         console.log(numCellsRevealed);
 
-        if ( numCellsRevealed === (numCells - board.numMines) ) {
+        if (numCellsRevealed === (numCells - board.numMines)) {
             console.log('You Won!');
             swal(boardUI.winAlert);
             boardUI.isDisabled = true;
@@ -123,9 +123,9 @@ var player = {
 
 // Object to represent the board data
 var board = {
-    gameBoard : new Array(boardSize),
-    freeSpaces : [],
-    numMines : 0,
+    gameBoard: new Array(boardSize),
+    freeSpaces: [],
+    numMines: 0,
 
     initGame: function(clickedRow, clickedCol) {
         this.numMines = this.getNumMines();
@@ -145,7 +145,7 @@ var board = {
     },
     createFreeSpaceArray: function(n, clickedRow, clickedCol) {
 
-        this.freeSpaces = [];  // Empty the freeSpaces array (in case of refresh)
+        this.freeSpaces = []; // Empty the freeSpaces array (in case of refresh)
 
         for (var i = 0; i < n; i++) {
             for (var j = 0; j < n; j++) {
@@ -153,8 +153,8 @@ var board = {
                     continue;
                 } else {
                     var obj = {
-                        row : i,
-                        col : j,
+                        row: i,
+                        col: j,
                     };
                     this.freeSpaces.push(obj);
                 }
@@ -165,7 +165,7 @@ var board = {
     getNumMines: function() {
         return Math.floor((parseInt($('#diffMenu').val()) / 100) * numCells);
     },
-    shuffleArray: function (array) {
+    shuffleArray: function(array) {
         var temp;
         var index;
         var counter = array.length;
@@ -186,15 +186,15 @@ var board = {
     placeMines: function(numMines) {
         var rowSearch, colSearch;
 
-        for (var i = 0; i < numMines ; i++) {
+        for (var i = 0; i < numMines; i++) {
 
             // Shift out first available coordinate
-            var mineCoordinate = this.freeSpaces.shift();   
-           
-            var row = mineCoordinate.row;      // Assign row to first character
-            var col = mineCoordinate.col;      // Assign column to second character
+            var mineCoordinate = this.freeSpaces.shift();
 
-            board.gameBoard[row][col] = MINE;         // Place mine at row, col
+            var row = mineCoordinate.row; // Assign row to first character
+            var col = mineCoordinate.col; // Assign column to second character
+
+            board.gameBoard[row][col] = MINE; // Place mine at row, col
 
             // Increment every number around it, unless another mine.
             // If this square is a number, increment.  Else ignore
@@ -209,7 +209,7 @@ var board = {
                         continue;
                     } else {
                         if ((this.gameBoard[rowSearch][colSearch] !== MINE)) {
-                            this.gameBoard[rowSearch][colSearch]++;
+                            this.gameBoard[rowSearch][colSearch] ++;
                         }
                     }
                 }
@@ -228,9 +228,10 @@ var boardUI = {
     // SweetAlert object for winning alert
     winAlert: {
         title: 'Woot!',
-        text: 'Congratulations, you win!  Click refresh or select another difficulty level!',
+        text: 'You win! \n Click refresh or select another difficulty level.',
         imageUrl: 'img/smiley.png',
-        confirmButtonText: 'Okay'
+        confirmButtonText: 'Okay',
+        confirmButtonColor: '#DD6B55'
     },
 
     // Double for loop to insert HTML for grid creation
@@ -248,22 +249,22 @@ var boardUI = {
         function createHandler(i, j) {
             var handler = function(event) {
                 switch (event.which) {
-                    case 1:  // Left Click
+                    case 1: // Left Click
                     default:
                         // If cell is flagged, do not reveal cell.
-                        if ($('#box' + i + j).hasClass('flag')){
+                        if ($('#box' + i + j).hasClass('flag')) {
                             // Do nothing
                         } else {
                             player.reveal(i, j);
                         }
                         break;
-                    case 3:  // Right Click
+                    case 3: // Right Click
                         // If cell is flagged, unflag.
                         if ($('#box' + i + j).hasClass('flag') && boardUI.isDisabled === false) {
                             $('#box' + i + j).removeClass('flag');
                             $('#box' + i + j).text('');
                             boardUI.flagCounter++;
-                            $('#flagCounter').text(boardUI.flagCounter);                       
+                            $('#flagCounter').text(boardUI.flagCounter);
                         } else {
                             player.flag(i, j);
                         }
@@ -296,25 +297,26 @@ var boardUI = {
             }
         }
 
+    },
+    initSelectors: function() {
         // Reset button
         $('#resetButton').click(function() {
             boardUI.resetGame();
         });
-    },
-    initSelectors: function() {
+
         // Initialize fancy select box
         $('#diffMenu').fancySelect();
-        
+
         // On change in difficulty, the board is reloaded.
         $('#diffMenu').fancySelect().on('change.fs', function() {
             if (!player.isFirstTurn) {
                 swal({
-                    title: "Are you sure?",
-                    text: "Game will reset and you will lose all progress.",
-                    type: "warning",
+                    title: 'Are you sure?',
+                    text: 'Game will reset and you will lose all progress.',
+                    type: 'warning',
                     showCancelButton: true,
-                    confirmButtonColor: "#DD6B55",
-                    confirmButtonText: "Yes, I'm sure!",
+                    confirmButtonColor: '#DD6B55',
+                    confirmButtonText: 'Yep!',
                 }, function() {
                     boardUI.resetGame();
                 });
@@ -331,7 +333,7 @@ var boardUI = {
     showAllMines: function() {
         for (var i = 0; i < boardSize; ++i) {
             for (var j = 0; j < boardSize; ++j) {
-                if (board.gameBoard[i][j] == MINE){
+                if (board.gameBoard[i][j] == MINE) {
                     $('#box' + i + j).text('');
                     $('#box' + i + j).prepend('<img class="icons" src="img/mine.png" />');
                 }
@@ -372,4 +374,3 @@ $(document).ready(function() {
     boardUI.createClickHandlers();
     boardUI.preloadImages();
 });
-
