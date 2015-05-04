@@ -78,8 +78,7 @@ var player = {
         }
 
         // Inserts flag icon
-        $('#box' + i + j).prepend('<img class="icons" src="img/flag.png" />');
-        $('#box' + i + j).addClass('flag');
+        $('#box' + i + j).addClass('flag').prepend('<img class="icons" src="img/flag.png" />');
         boardUI.flagCounter--;
         $('#flagCounter').text(boardUI.flagCounter);
     },
@@ -270,8 +269,7 @@ var boardUI = {
                     case 3: // Right Click
                         // If cell is flagged, unflag.
                         if ($('#box' + i + j).hasClass('flag') && boardUI.isDisabled === false) {
-                            $('#box' + i + j).removeClass('flag');
-                            $('#box' + i + j).text('');
+                            $('#box' + i + j).removeClass('flag').text('');
                             boardUI.flagCounter++;
                             $('#flagCounter').text(boardUI.flagCounter);
                         } else {
@@ -307,8 +305,7 @@ var boardUI = {
         }
 
         // Reset button
-        $('#resetButton').off();
-        $('#resetButton').click(function() {
+        $('#resetButton').off().click(function() {
             boardUI.resetGame();
         });
     },
@@ -357,8 +354,7 @@ var boardUI = {
         for (var i = 0; i < boardSize; ++i) {
             for (var j = 0; j < boardSize; ++j) {
                 if (board.gameBoard[i][j] == MINE) {
-                    $('#box' + i + j).text('');
-                    $('#box' + i + j).prepend('<img class="icons" src="img/mine.png" />');
+                    $('#box' + i + j).text('').prepend('<img class="icons" src="img/mine.png" />');
                 }
             }
         }
@@ -370,9 +366,7 @@ var boardUI = {
         // Disable all click handlers and styles to the cells, reset to default.
         for (var i = 0; i < boardSize; ++i) {
             for (var j = 0; j < boardSize; ++j) {
-                $('#box' + i + j).off();
-                $('#box' + i + j).text('');
-                $('#box' + i + j).attr('class', 'boardCell');
+                $('#box' + i + j).off().text('').attr('class', 'boardCell');
                 player.isFirstTurn = true;
                 boardUI.isDisabled = false;
             }
