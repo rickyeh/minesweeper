@@ -317,8 +317,6 @@ var boardUI = {
 
         // On change in difficulty, the board is reloaded.
         $('#diffMenu').fancySelect().on('change.fs', function() {
-            var selected = $(this).val();
-            console.log(selected);
 
             // If it's not the first turn, pop up confirmation box
             if (!player.isFirstTurn) {
