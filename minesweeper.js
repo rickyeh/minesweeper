@@ -35,6 +35,7 @@ var player = {
             return;
         }
 
+        // Depending on what number is revealed, either change colors or autoclear if 0
         switch (board.gameBoard[i][j]) {
             case 0:
                 player.autoClear(i, j);
@@ -94,6 +95,7 @@ var player = {
             boardUI.isDisabled = true;
         }
     },
+    // Method that clears all surrounding cells when a 0 is revealed until there are no zeroes
     autoClear: function(row, col) {
 
         var rowSearch, colSearch;
@@ -127,12 +129,14 @@ var board = {
     freeSpaces: [],
     numMines: 0,
 
+    // Method that initializes the game by calling other methods.
     initGame: function(clickedRow, clickedCol) {
         this.numMines = this.getNumMines();
         this.createBoard(boardSize);
         this.createFreeSpaceArray(boardSize, clickedRow, clickedCol);
         this.placeMines(this.numMines);
     },
+    // Method that creates the 2d array that will store the game data
     createBoard: function(n) {
         for (var i = 0; i < n; i++) {
             this.gameBoard[i] = new Array(n);
@@ -143,6 +147,7 @@ var board = {
             }
         }
     },
+    // Method that creates an array to determine where mines are placed
     createFreeSpaceArray: function(n, clickedRow, clickedCol) {
 
         this.freeSpaces = []; // Empty the freeSpaces array (in case of refresh)
@@ -162,9 +167,11 @@ var board = {
         }
         this.freeSpaces = this.shuffleArray(this.freeSpaces);
     },
+    // Method that returns the number of mines appropriate for a difficulty
     getNumMines: function() {
         return Math.floor((parseInt($('#diffMenu').val()) / 100) * numCells);
     },
+    // Method that shuffles an array.  Used to randomize available spaces for mine placement.
     shuffleArray: function(array) {
         var temp;
         var index;
@@ -183,6 +190,7 @@ var board = {
         return array;
     },
 
+    // Method that randomly places mines
     placeMines: function(numMines) {
         var rowSearch, colSearch;
 
@@ -244,6 +252,7 @@ var boardUI = {
         }
     },
 
+    // Creates click handlers for all the grids and buttons
     createClickHandlers: function() {
         // Returns a handler function that is called when clicked.  Uses closure to pass in i, j
         function createHandler(i, j) {
@@ -297,18 +306,24 @@ var boardUI = {
             }
         }
 
-    },
-    initSelectors: function() {
         // Reset button
+        $('#resetButton').off();
         $('#resetButton').click(function() {
             boardUI.resetGame();
         });
+    },
+    // Initializes the fancy select box
+    initSelectBox: function() {
 
         // Initialize fancy select box
         $('#diffMenu').fancySelect();
 
         // On change in difficulty, the board is reloaded.
         $('#diffMenu').fancySelect().on('change.fs', function() {
+            var selected = $(this).val();
+            console.log(selected);
+
+            // If it's not the first turn, pop up confirmation box
             if (!player.isFirstTurn) {
                 swal({
                     title: 'Are you sure?',
@@ -317,12 +332,19 @@ var boardUI = {
                     showCancelButton: true,
                     confirmButtonColor: '#DD6B55',
                     confirmButtonText: 'Yep!',
-                }, function() {
-                    boardUI.resetGame();
+                }, function(isConfirm) {
+                    if (isConfirm) {
+                        boardUI.resetGame();
+                    } else {
+                        $('#diffMenu').val(board.numMines).trigger('update');
+                    }
                 });
+            } else {
+                boardUI.resetGame();
             }
         });
     },
+    // Pre-loads the graphics to prevent lag on first use.
     preloadImages: function() {
         var img1 = new Image();
         var img2 = new Image();
@@ -330,6 +352,7 @@ var boardUI = {
         img1.src = 'img/flag.png';
         img2.src = 'img/mine.png';
     },
+    // Function to display all mines on a game loss
     showAllMines: function() {
         for (var i = 0; i < boardSize; ++i) {
             for (var j = 0; j < boardSize; ++j) {
@@ -340,9 +363,11 @@ var boardUI = {
             }
         }
     },
+    // Method that resets game to initial state.
     resetGame: function() {
         numCellsRevealed = 0;
 
+        // Disable all click handlers and styles to the cells, reset to default.
         for (var i = 0; i < boardSize; ++i) {
             for (var j = 0; j < boardSize; ++j) {
                 $('#box' + i + j).off();
@@ -353,6 +378,7 @@ var boardUI = {
             }
         }
 
+        // Recreate click handlers and reset number of mines and flags.
         boardUI.createClickHandlers();
         board.numMines = board.getNumMines();
         boardUI.flagCounter = board.numMines;
@@ -369,7 +395,7 @@ var boardUI = {
 // }
 
 $(document).ready(function() {
-    boardUI.initSelectors();
+    boardUI.initSelectBox();
     boardUI.createGrid(boardSize);
     boardUI.createClickHandlers();
     boardUI.preloadImages();
