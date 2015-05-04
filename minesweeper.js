@@ -230,7 +230,7 @@ var boardUI = {
 
     // Flag that toggles the board's clickability.
     isDisabled: false,
-    flagCounter: 20,
+    flagCounter: 0,
 
     // SweetAlert object for winning alert
     winAlert: {
@@ -310,7 +310,11 @@ var boardUI = {
         });
     },
     // Initializes the fancy select box
-    initSelectBox: function() {
+    initHeaderElements: function() {
+
+        // Initialize flag counter
+        this.flagCounter = board.getNumMines();
+        $('#flagCounter').text(this.flagCounter);
 
         // Initialize fancy select box
         $('#diffMenu').fancySelect();
@@ -318,8 +322,8 @@ var boardUI = {
         // On change in difficulty, the board is reloaded.
         $('#diffMenu').fancySelect().on('change.fs', function() {
 
-            // If it's not the first turn, pop up confirmation box
-            if (!player.isFirstTurn) {
+            // If it's not the first turn, or the end of a game, pop up confirmation box
+            if (!player.isFirstTurn  && !boardUI.isDisabled) {
                 swal({
                     title: 'Are you sure?',
                     text: 'Game will reset and you will lose all progress.',
@@ -352,7 +356,7 @@ var boardUI = {
         for (var i = 0; i < boardSize; ++i) {
             for (var j = 0; j < boardSize; ++j) {
                 if (board.gameBoard[i][j] == MINE) {
-                    $('#box' + i + j).text('').prepend('<img class="icons" src="img/mine.png" />');
+                    $('#box' + i + j).html('<img class="icons" src="img/mine.png" />');
                 }
             }
         }
@@ -387,7 +391,7 @@ var boardUI = {
 // }
 
 $(document).ready(function() {
-    boardUI.initSelectBox();
+    boardUI.initHeaderElements();
     boardUI.createGrid(boardSize);
     boardUI.createClickHandlers();
     boardUI.preloadImages();

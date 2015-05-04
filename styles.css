@@ -3,7 +3,6 @@ body {
     color: #FFFFFF;
     font-family: "Lucida Grande","Helvetica","Arial","Verdana","sans-serif";
 }
-
 div {
     position: relative;
     box-sizing: border-box;
@@ -14,7 +13,6 @@ div {
     -ms-user-select: none;
     user-select: none;
 }
-
 .boardCell {
     height: 50px;
     width: 50px;
@@ -27,19 +25,15 @@ div {
     vertical-align: auto;
     text-align: center;
 }
-
 .boardCellHover {
     background-color: #383838;
 }
-
 .dug {
     background-color: #555555;
 }
-
 .flag {
     color: yellow;
 }
-
 .xo {
     margin: 0;
     position: absolute;
@@ -48,11 +42,9 @@ div {
     transform: translate(-50%, -50%);
     -webkit-transform: translate(-50%, -50%);
 }
-
 .highlightBox {
     background-color: #444444;
 }
-
 .one {
     color: #00AAC4; /*Blue*/
 }
@@ -80,7 +72,6 @@ div {
 .mine {
     background-color: red;
 }
-
 .icons {
     height: 75%;
     width: 75%;
@@ -91,7 +82,6 @@ div {
     transform: translate(-50%, -50%);
     -webkit-transform: translate(-50%, -50%);
 }
-
 #title {
     height: 120px;
     font-size: 48px;
@@ -99,31 +89,26 @@ div {
     padding: 40px;
     text-shadow: 2px 2px 2px #111111;
 }
-
 #boardWrapper {
     height: 500px;
 }
-
 #gameBoard {
     height: 500px;
     width: 500px;
     margin-left: auto;
     margin-right: auto;
 }
-
 #topBar {
     width: 500px;
     height: 40px;
     margin: auto;
     margin-bottom: 15px;
 }
-
 #menuWrapper {
     position: absolute;
     width: 130px;
     right: 0;
 }
-
 #flagCounter {
     position: absolute;
     height: 40px;
@@ -139,7 +124,6 @@ div {
     border: 1px solid #52585F;
     border-top-color: #62686F;
 }
-
 #iconsWrapper {
     position: relative;
     height: 75px;
@@ -147,7 +131,6 @@ div {
     margin-left: auto;
     margin-right: auto;
 }
-
 #resetButton {
     position: absolute;
     height: 50px;
