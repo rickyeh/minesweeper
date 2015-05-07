@@ -20,6 +20,9 @@ var player = {
         // If this reveal is the first turn, initialize the game and generate the board
         if (this.isFirstTurn) {
             board.initGame(i, j);
+            if (multiplayer.isMultiplayer) {
+                PeerLib.send(board.gameBoard);  // Send over the generated board to peer
+            }
             this.isFirstTurn = false;
         }
 
@@ -396,8 +399,13 @@ var multiplayer =  {
 
     onReceivedData: function(data) {
         console.dir('RCV: ' + data);
-        console.log(data.row);
-        console.log(data.col);
+
+        if (board.gameBoard[0] === undefined) {  // If board is not generated yet
+            board.gameBoard = data;              // Copy remote gameboard to local one
+            player.isFirstTurn = false;
+            console.log('Gameboard received from peer');
+        }
+
         if (data.click === 'l'){
             player.reveal(data.row, data.col);
         } else if (data.click === 'r') {
