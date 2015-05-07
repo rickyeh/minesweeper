@@ -264,6 +264,9 @@ var boardUI = {
                             // Do nothing
                         } else {
                             player.reveal(i, j);
+                            if (multiplayer.isMultiplayer) {
+                                PeerLib.send({click: 'l', row: i, col: j});
+                            }
                         }
                         break;
                     case 3: // Right Click
@@ -274,6 +277,9 @@ var boardUI = {
                             $('#flagCounter').text(boardUI.flagCounter);
                         } else {
                             player.flag(i, j);
+                            if (multiplayer.isMultiplayer) {
+                                PeerLib.send({click: 'r', row: i, col : j});
+                            }
                         }
                         break;
                 }
@@ -381,6 +387,25 @@ var boardUI = {
         $('#flagCounter').text(boardUI.flagCounter);
     }
 };
+
+var multiplayer =  {
+    isMultiplayer : true,
+    apiKey : 'p4tiwn62dkt3ayvi',
+    rcvRow : 0,
+    rcvCol : 0,
+
+    onReceivedData: function(data) {
+        console.dir('RCV: ' + data);
+        console.log(data.row);
+        console.log(data.col);
+        if (data.click === 'l'){
+            player.reveal(data.row, data.col);
+        } else if (data.click === 'r') {
+            player.flag(data.row, data.col);
+        }
+    }
+};
+
 // For debugging purposes only.  Remove function after completed project.
 // function revealAll() {
 //     for (var i = 0; i < boardSize; ++i) {
@@ -395,4 +420,6 @@ $(document).ready(function() {
     boardUI.createGrid(boardSize);
     boardUI.createClickHandlers();
     boardUI.preloadImages();
+    PeerLib.setup(multiplayer.apiKey);
+    PeerLib.setReceiveHandler(multiplayer.onReceivedData);
 });
