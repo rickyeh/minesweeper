@@ -75,6 +75,13 @@ var player = {
 
     // Method called when player right clicks
     flag: function(i, j) {
+        if ($('#box' + i + j).hasClass('flag') && boardUI.isDisabled === false) {
+            $('#box' + i + j).removeClass('flag').text('');
+            boardUI.flagCounter++;
+            $('#flagCounter').text(boardUI.flagCounter);
+            return;
+        }
+
         if (boardUI.isDisabled) {
             console.log('Game is over.  Please Restart');
             return;
@@ -273,16 +280,9 @@ var boardUI = {
                         }
                         break;
                     case 3: // Right Click
-                        // If cell is flagged, unflag.
-                        if ($('#box' + i + j).hasClass('flag') && boardUI.isDisabled === false) {
-                            $('#box' + i + j).removeClass('flag').text('');
-                            boardUI.flagCounter++;
-                            $('#flagCounter').text(boardUI.flagCounter);
-                        } else {
-                            player.flag(i, j);
-                            if (multiplayer.isMultiplayer) {
-                                PeerLib.send({click: 'r', row: i, col : j});
-                            }
+                        player.flag(i, j);
+                        if (multiplayer.isMultiplayer) {
+                            PeerLib.send({click: 'r', row: i, col : j});
                         }
                         break;
                 }
@@ -372,17 +372,30 @@ var boardUI = {
     },
     // Method that resets game to initial state.
     resetGame: function() {
+        if (multiplayer.isMultiplayer) {
+            if(player.isFirstTurn) {
+                return;
+            }
+            PeerLib.send({reset: true});
+        }
+
         numCellsRevealed = 0;
 
         // Disable all click handlers and styles to the cells, reset to default.
         for (var i = 0; i < boardSize; ++i) {
             for (var j = 0; j < boardSize; ++j) {
                 $('#box' + i + j).off().text('').attr('class', 'boardCell');
-                player.isFirstTurn = true;
-                boardUI.isDisabled = false;
             }
         }
+        
+        player.isFirstTurn = true;
+        boardUI.isDisabled = false;
 
+        // Reset the board to undefined so multiplayer mode knows board is fresh.
+        for (var i = 0; i < boardSize; ++i) {
+            board.gameBoard[i] = undefined;
+        }
+        
         // Recreate click handlers and reset number of mines and flags.
         boardUI.createClickHandlers();
         board.numMines = board.getNumMines();
@@ -400,6 +413,11 @@ var multiplayer =  {
     onReceivedData: function(data) {
         console.dir('RCV: ' + data);
 
+        if (data.reset === true) {
+            boardUI.resetGame();
+            return;
+        }
+
         if (board.gameBoard[0] === undefined) {  // If board is not generated yet
             board.gameBoard = data;              // Copy remote gameboard to local one
             player.isFirstTurn = false;
@@ -411,6 +429,7 @@ var multiplayer =  {
         } else if (data.click === 'r') {
             player.flag(data.row, data.col);
         }
+
     }
 };
 
