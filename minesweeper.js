@@ -241,6 +241,7 @@ var board = {
         if (queryParams.id !== undefined){
             queryParams.id = queryParams.id.replace('/','');
             PeerLib.connect(queryParams.id);
+            multiplayer.isMultiplayer = true;
         }
     },
     getQueryParams: function() {
