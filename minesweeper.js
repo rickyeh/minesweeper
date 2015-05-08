@@ -21,7 +21,11 @@ var player = {
         if (this.isFirstTurn) {
             board.initGame(i, j);
             if (multiplayer.isMultiplayer) {
-                PeerLib.send(board.gameBoard); // Send over the generated board to peer
+                // Send over the generated board to peer
+                PeerLib.send({
+                    gameBoard: board.gameBoard,
+                    diff: board.numMines
+                });
             }
             this.isFirstTurn = false;
         }
@@ -352,7 +356,7 @@ var boardUI = {
         // Link button
         $('#generateLink').off().click(function() {
             multiplayer.isMultiplayer = true;
-            var friendLink =  'http://www.rickyeh.com/minesweeper/?id=' + PeerLib.getPeerID();
+            var friendLink =  'http://rickyeh.com/minesweeper/?id=' + PeerLib.getPeerID();
 
             swal({
                 title: 'Play With A Friend',
@@ -417,7 +421,10 @@ var boardUI = {
     // Method that resets game to initial state.
     resetGame: function() {
         if (multiplayer.isMultiplayer) {
-            if(player.isFirstTurn) {
+            if (player.isFirstTurn) {
+                board.numMines = board.getNumMines();
+                boardUI.flagCounter = board.numMines;
+                $('#flagCounter').text(boardUI.flagCounter);
                 return;
             }
             PeerLib.send({reset: true});
@@ -464,9 +471,18 @@ var multiplayer =  {
         }
 
         if (board.gameBoard[0] === undefined) {  // If board is not generated yet
-            board.gameBoard = data;              // Copy remote gameboard to local one
-            player.isFirstTurn = false;
+            board.gameBoard = data.gameBoard;    // Copy remote gameboard to local one
             console.log('Gameboard received from peer');
+            player.isFirstTurn = false;
+
+            // Set locally the number of mines to match difficulty
+            board.numMines = data.diff;
+
+            // Update the flag counter and difficulty fancy select box
+            boardUI.flagCounter = board.numMines;
+            $('#flagCounter').text(boardUI.flagCounter);
+            $('#diffMenu').val(data.diff).trigger('update');
+
         }
 
         if (data.click === 'l'){
