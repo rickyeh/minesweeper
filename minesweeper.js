@@ -21,7 +21,7 @@ var player = {
         if (this.isFirstTurn) {
             board.initGame(i, j);
             if (multiplayer.isMultiplayer) {
-                PeerLib.send(board.gameBoard);  // Send over the generated board to peer
+                PeerLib.send(board.gameBoard); // Send over the generated board to peer
             }
             this.isFirstTurn = false;
         }
@@ -232,6 +232,31 @@ var board = {
                 }
             }
         }
+    },
+    checkQueryParams: function() {
+        var queryParams = this.getQueryParams();
+
+        // ** ACCOUNT FOR LOCALHOST SERVER BUG.  **
+
+        if (queryParams.id !== undefined){
+            queryParams.id = queryParams.id.replace('/','');
+            PeerLib.connect(queryParams.id);
+        }
+    },
+    getQueryParams: function() {
+
+        var queryString = window.location.search.substring(1); // Gets the query string, drops the ?
+
+        var object = {};
+
+        var arrayOfVars = queryString.split('&'); // Splits multiple variables delimited by '&'
+
+        for (var i = 0; i < arrayOfVars.length; i++) {
+            var pair = arrayOfVars[i].split('=');
+
+            object[pair[0]] = pair[1];
+        }
+        return object;
     }
 };
 
@@ -313,9 +338,27 @@ var boardUI = {
             }
         }
 
+        // Help Button
+        $('#helpDialog').off().click(function() {
+            swal('How To Play', 'You should already know how to play minesweeper!');
+        });
+
         // Reset button
         $('#resetButton').off().click(function() {
             boardUI.resetGame();
+        });
+
+        // Link button
+        $('#generateLink').off().click(function() {
+            multiplayer.isMultiplayer = true;
+            var friendLink =  'http://www.rickyeh.com/minesweeper/?id=' + PeerLib.getPeerID();
+
+            swal({
+                title: 'Play With A Friend',
+                text: 'Ask your friend to visit the link below to begin : <br><br>' +
+                    '<div id="linkAlert" contenteditable="true" onclick=\'document.execCommand(\"selectAll\",false,null)\'>' + friendLink + '</div>',
+                html: true
+            });
         });
     },
     // Initializes the fancy select box
@@ -392,10 +435,10 @@ var boardUI = {
         boardUI.isDisabled = false;
 
         // Reset the board to undefined so multiplayer mode knows board is fresh.
-        for (var i = 0; i < boardSize; ++i) {
+        for (i = 0; i < boardSize; ++i) {
             board.gameBoard[i] = undefined;
         }
-        
+
         // Recreate click handlers and reset number of mines and flags.
         boardUI.createClickHandlers();
         board.numMines = board.getNumMines();
@@ -405,10 +448,11 @@ var boardUI = {
 };
 
 var multiplayer =  {
-    isMultiplayer : true,
+    isMultiplayer : false,
     apiKey : 'p4tiwn62dkt3ayvi',
     rcvRow : 0,
     rcvCol : 0,
+    friendLink : '',
 
     onReceivedData: function(data) {
         console.dir('RCV: ' + data);
@@ -449,4 +493,5 @@ $(document).ready(function() {
     boardUI.preloadImages();
     PeerLib.setup(multiplayer.apiKey);
     PeerLib.setReceiveHandler(multiplayer.onReceivedData);
+    board.checkQueryParams();
 });
