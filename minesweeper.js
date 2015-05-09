@@ -345,7 +345,13 @@ var boardUI = {
 
         // Help Button
         $('#helpDialog').off().click(function() {
-            swal('How To Play', 'You should already know how to play minesweeper!');
+            swal({
+                title: 'How To Play',
+                text: 'Left click to dig up a square.  Right click to flag a mine.<br>' + 
+                'Numbers indicate the amount of adjacent mines to a tile.<br>' +
+                'Dig up all non-mine tiles to win.  Good luck!',
+                html: true,
+            });
         });
 
         // Reset button
@@ -360,9 +366,16 @@ var boardUI = {
 
             swal({
                 title: 'Play With A Friend',
-                text: 'Ask your friend to visit the link below to begin : <br><br>' +
+                text: 'Ask your friend to visit the link below to begin : <br>' +
+                    'Note: You will be unable to begin the game until they connect.<br><br>' + 
                     '<div id="linkAlert" contenteditable="true" onclick=\'document.execCommand(\"selectAll\",false,null)\'>' + friendLink + '</div>',
-                html: true
+                html: true,
+                showCancelButton: true,
+                confirmButtonText: 'Let\'s go!',
+            }, function(isConfirm) {
+                if (!isConfirm) {
+                    multiplayer.isMultiplayer = false;
+                }
             });
         });
     },

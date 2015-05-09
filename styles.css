@@ -53,7 +53,7 @@ div {
     color: #77DD77; /*Green*/
 }
 .three {
-    color: #E43A20; /*Red*/
+    color: #DD6B55; /*Red*/
 }
 .four {
     color: #C2A5CF; /*Violet*/
@@ -92,6 +92,8 @@ div {
 }
 #boardWrapper {
     height: 500px;
+    margin-top: 40px;
+    margin-bottom: 30px;
 }
 #gameBoard {
     height: 500px;
@@ -155,7 +157,8 @@ div {
 
 #helpDialog {
     top: 0; left: 0; bottom: 0; right: 200px;
-
 }
 
-
+#alignLeft {
+    text-align: left;
+}
