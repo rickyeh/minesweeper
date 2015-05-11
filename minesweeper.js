@@ -361,22 +361,32 @@ var boardUI = {
 
         // Link button
         $('#generateLink').off().click(function() {
-            multiplayer.isMultiplayer = true;
             var friendLink =  'http://rickyeh.com/minesweeper/?id=' + PeerLib.getPeerID();
 
-            swal({
-                title: 'Play With A Friend',
-                text: 'Ask your friend to visit the link below to begin : <br>' +
-                    'Note: You will be unable to begin the game until they connect.<br><br>' + 
-                    '<div id="linkAlert" contenteditable="true" onclick=\'document.execCommand(\"selectAll\",false,null)\'>' + friendLink + '</div>',
-                html: true,
-                showCancelButton: true,
-                confirmButtonText: 'Let\'s go!',
-            }, function(isConfirm) {
-                if (!isConfirm) {
-                    multiplayer.isMultiplayer = false;
-                }
-            });
+            if (player.isFirstTurn === true) {
+                swal({
+                    title: 'Play With A Friend',
+                    text: 'Ask your friend to visit the link below to begin : <br>' +
+                        'Note: You will be unable to begin the game until they connect.<br><br>' + 
+                        '<div id="linkAlert" contenteditable="true" onclick=\'document.execCommand(\"selectAll\",false,null)\'>' + friendLink + '</div>',
+                    html: true,
+                    showCancelButton: true,
+                    confirmButtonText: 'Let\'s go!',
+                }, function(isConfirm) {
+                    if (isConfirm) {
+                        multiplayer.isMultiplayer = true;
+                    } else {
+                        multiplayer.isMultiplayer = false;
+                    }
+                });
+            } else {
+                swal({
+                    title: 'Error!',
+                    text: 'Sorry, you may only enable multiplayer mode before the game begins. ' +
+                    'Please refresh if you would like to do so.',
+                    type: 'error'
+                });
+            }
         });
     },
     // Initializes the fancy select box
