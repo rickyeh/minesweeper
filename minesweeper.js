@@ -92,7 +92,7 @@ var player = {
         }
 
         // Inserts flag icon
-        $('#box' + i + j).addClass('flag').prepend('<img class="icons" src="img/flag.png" />');
+        $('#box' + i + j).addClass('flag').prepend('<img class="icons" src="img/flag.png">');
         boardUI.flagCounter--;
         $('#flagCounter').text(boardUI.flagCounter);
     },
@@ -153,8 +153,6 @@ var board = {
     createBoard: function(n) {
         for (var i = 0; i < n; i++) {
             this.gameBoard[i] = new Array(n);
-        }
-        for (i = 0; i < n; i++) {
             for (var j = 0; j < n; j++) {
                 this.gameBoard[i][j] = 0;
             }
@@ -167,7 +165,7 @@ var board = {
 
         for (var i = 0; i < n; i++) {
             for (var j = 0; j < n; j++) {
-                if (i === clickedRow && j === clickedCol) {
+                if (i === clickedRow && j === clickedCol) {  // Avoid clicked cell for first click death
                     continue;
                 } else {
                     var obj = {
@@ -240,10 +238,8 @@ var board = {
     checkQueryParams: function() {
         var queryParams = this.getQueryParams();
 
-        // ** ACCOUNT FOR LOCALHOST SERVER BUG.  **
-
         if (queryParams.id !== undefined){
-            queryParams.id = queryParams.id.replace('/','');
+            queryParams.id = queryParams.id.replace('/',''); // ACCOUNT FOR LOCALHOST SERVER BUG. 
             PeerLib.connect(queryParams.id);
             multiplayer.isMultiplayer = true;
         }
@@ -293,7 +289,7 @@ var boardUI = {
 
     // Creates click handlers for all the grids and buttons
     createClickHandlers: function() {
-        // Returns a handler function that is called when clicked.  Uses closure to pass in i, j
+        // Returns a handler function that is called when clicked.  Uses closure to capture i, j
         function createHandler(i, j) {
             var handler = function(event) {
                 switch (event.which) {
@@ -363,7 +359,7 @@ var boardUI = {
         $('#generateLink').off().click(function() {
             var friendLink =  'http://rickyeh.com/minesweeper/?id=' + PeerLib.getPeerID();
 
-            if (player.isFirstTurn === true) {
+            if (player.isFirstTurn) {
                 swal({
                     title: 'Play With A Friend',
                     text: 'Ask your friend to visit the link below to begin : <br>' +
@@ -436,7 +432,7 @@ var boardUI = {
         for (var i = 0; i < boardSize; ++i) {
             for (var j = 0; j < boardSize; ++j) {
                 if (board.gameBoard[i][j] == MINE) {
-                    $('#box' + i + j).html('<img class="icons" src="img/mine.png" />');
+                    $('#box' + i + j).html('<img class="icons" src="img/mine.png">');
                 }
             }
         }
@@ -488,7 +484,7 @@ var multiplayer =  {
     onReceivedData: function(data) {
         console.dir('RCV: ' + data);
 
-        if (data.reset === true) {
+        if (data.reset) {
             boardUI.resetGame();
             return;
         }
