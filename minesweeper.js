@@ -10,10 +10,20 @@ var player = {
 
     // Method called when player clicks on a cell.  Reveals the cell
     reveal: function(i, j) {
+        var $clickedCell = $('#box' + i + j);
 
         // Check if board is disabled by loss/victory.  Do nothing if true.
         if (boardUI.isDisabled) {
             console.log('Game is over.  Please Restart');
+            return;
+        }
+
+        if (multiplayer.isMultiplayer && !multiplayer.connectionExist) {
+            swal({
+                title: 'Warning!',
+                text: 'Please wait until a connection with your partner is established to begin.',
+                type: 'error'
+            });
             return;
         }
 
@@ -30,8 +40,8 @@ var player = {
             this.isFirstTurn = false;
         }
 
-        $('#box' + i + j).addClass('dug');
-        $('#box' + i + j).off('mouseup');
+        $clickedCell.addClass('dug');
+        $clickedCell.off('mouseup');
 
         // If the clicked cell is a mine, player loses, all mines are shown
         if (board.gameBoard[i][j] === MINE) {
@@ -49,40 +59,43 @@ var player = {
                 player.checkVictory();
                 return;
             case 1:
-                $('#box' + i + j).addClass('one');
+                $clickedCell.addClass('one');
                 break;
             case 2:
-                $('#box' + i + j).addClass('two');
+                $clickedCell.addClass('two');
                 break;
             case 3:
-                $('#box' + i + j).addClass('three');
+                $clickedCell.addClass('three');
                 break;
             case 4:
-                $('#box' + i + j).addClass('four');
+                $clickedCell.addClass('four');
                 break;
             case 5:
-                $('#box' + i + j).addClass('five');
+                $clickedCell.addClass('five');
                 break;
             case 6:
-                $('#box' + i + j).addClass('six');
+                $clickedCell.addClass('six');
                 break;
             case 7:
-                $('#box' + i + j).addClass('seven');
+                $clickedCell.addClass('seven');
                 break;
             case 8:
-                $('#box' + i + j).addClass('eight');
+                $clickedCell.addClass('eight');
                 break;
         }
-        $('#box' + i + j).text(board.gameBoard[i][j]);
+        $clickedCell.text(board.gameBoard[i][j]);
         player.checkVictory();
     },
 
     // Method called when player right clicks
     flag: function(i, j) {
-        if ($('#box' + i + j).hasClass('flag') && boardUI.isDisabled === false) {
-            $('#box' + i + j).removeClass('flag').text('');
+        var $clickedCell = $('#box' + i + j);
+        var $flagCounter = $('#flagCounter');
+
+        if ($clickedCell.hasClass('flag') && boardUI.isDisabled === false) {
+            $clickedCell.removeClass('flag').text('');
             boardUI.flagCounter++;
-            $('#flagCounter').text(boardUI.flagCounter);
+            $flagCounter.text(boardUI.flagCounter);
             return;
         }
 
@@ -92,9 +105,9 @@ var player = {
         }
 
         // Inserts flag icon
-        $('#box' + i + j).addClass('flag').prepend('<img class="icons" src="img/flag.png">');
+        $clickedCell.addClass('flag').prepend('<img class="icons" src="img/flag.png">');
         boardUI.flagCounter--;
-        $('#flagCounter').text(boardUI.flagCounter);
+        $flagCounter.text(boardUI.flagCounter);
     },
 
     // Method that checks for a victory everytime a cell is successfully cleared
@@ -279,10 +292,12 @@ var boardUI = {
 
     // Double for loop to insert HTML for grid creation
     createGrid: function(n) {
+        var $gameBoard = $('#gameBoard');
+
         for (var i = 0; i < n; ++i) {
             for (var j = 0; j < n; ++j) {
                 var boxString = '<div class="boardCell" id="box' + i + j + '"></div>';
-                $('#gameBoard').append(boxString);
+                $gameBoard.append(boxString);
             }
         }
     },
@@ -291,7 +306,7 @@ var boardUI = {
     createClickHandlers: function() {
         // Returns a handler function that is called when clicked.  Uses closure to capture i, j
         function createHandler(i, j) {
-            var handler = function(event) {
+            return function(event) {
                 switch (event.which) {
                     case 1: // Left Click
                     default:
@@ -313,39 +328,39 @@ var boardUI = {
                         break;
                 }
             };
-            return handler;
         }
 
         function createHoverHandler(i, j) {
-            var handler = function() {
+            return function() {
                 $('#box' + i + j).addClass('boardCellHover');
             };
-            return handler;
         }
 
         function createDeHoverHandler(i, j) {
-            var handler = function() {
+            return function() {
                 $('#box' + i + j).removeClass('boardCellHover');
             };
-            return handler;
         }
 
         // Loop to initialize all board cell handlers
         for (var i = 0; i < boardSize; ++i) {
             for (var j = 0; j < boardSize; ++j) {
-                $('#box' + i + j).on('mouseup', createHandler(i, j));
-                $('#box' + i + j).on('mouseover', createHoverHandler(i, j));
-                $('#box' + i + j).on('mouseout', createDeHoverHandler(i, j));
+                var $currCell = $('#box' + i + j);
+
+                $currCell.on('mouseup', createHandler(i, j));
+                $currCell.on('mouseover', createHoverHandler(i, j));
+                $currCell.on('mouseout', createDeHoverHandler(i, j));
             }
         }
-
+    },
+    initFooter: function() {
         // Help Button
         $('#helpDialog').off().click(function() {
             swal({
                 title: 'How To Play',
-                text: 'Left click to dig up a square.  Right click to flag a mine.<br>' + 
-                'Numbers indicate the amount of adjacent mines to a tile.<br>' +
-                'Dig up all non-mine tiles to win.  Good luck!',
+                text: 'Left click to dig up a square.  Right click to flag a mine.<br>' +
+                    'Numbers indicate the amount of adjacent mines to a tile.<br>' +
+                    'Dig up all non-mine tiles to win.  Good luck!',
                 html: true,
             });
         });
@@ -357,13 +372,13 @@ var boardUI = {
 
         // Link button
         $('#generateLink').off().click(function() {
-            var friendLink =  'http://rickyeh.com/minesweeper/?id=' + PeerLib.getPeerID();
+            var friendLink = 'http://rickyeh.com/minesweeper/?id=' + PeerLib.getPeerID();
 
             if (player.isFirstTurn) {
                 swal({
                     title: 'Play With A Friend',
                     text: 'Ask your friend to visit the link below to begin : <br>' +
-                        'Note: You will be unable to begin the game until they connect.<br><br>' + 
+                        'Note: You will be unable to begin the game until they connect.<br><br>' +
                         '<div id="linkAlert" contenteditable="true" onclick=\'document.execCommand(\"selectAll\",false,null)\'>' + friendLink + '</div>',
                     html: true,
                     showCancelButton: true,
@@ -375,28 +390,36 @@ var boardUI = {
                         multiplayer.isMultiplayer = false;
                     }
                 });
+            } else if (multiplayer.isMultiplayer) {
+                swal({
+                    title: 'Oops!',
+                    text: 'Multiplayer mode is already enabled.',
+                    type: 'info'
+                });
             } else {
                 swal({
                     title: 'Error!',
                     text: 'Sorry, you may only enable multiplayer mode before the game begins. ' +
-                    'Please refresh if you would like to do so.',
+                        'Please refresh if you would like to do so.',
                     type: 'error'
                 });
             }
         });
     },
+            
     // Initializes the fancy select box
     initHeaderElements: function() {
+    var $diffMenu = $('#diffMenu');
 
         // Initialize flag counter
         this.flagCounter = board.getNumMines();
         $('#flagCounter').text(this.flagCounter);
 
         // Initialize fancy select box
-        $('#diffMenu').fancySelect();
+        $diffMenu.fancySelect();
 
         // On change in difficulty, the board is reloaded.
-        $('#diffMenu').fancySelect().on('change.fs', function() {
+        $diffMenu.fancySelect().on('change.fs', function() {
 
             // If it's not the first turn, or the end of a game, pop up confirmation box
             if (!player.isFirstTurn  && !boardUI.isDisabled) {
@@ -411,7 +434,7 @@ var boardUI = {
                     if (isConfirm) {
                         boardUI.resetGame();
                     } else {
-                        $('#diffMenu').val(board.numMines).trigger('update');
+                        $diffMenu.val(board.numMines).trigger('update');
                     }
                 });
             } else {
@@ -476,10 +499,21 @@ var boardUI = {
 
 var multiplayer =  {
     isMultiplayer : false,
+    connectionExist: false,
     apiKey : 'p4tiwn62dkt3ayvi',
     rcvRow : 0,
     rcvCol : 0,
     friendLink : '',
+
+    onConnection: function() {
+        multiplayer.connectionExist = true;
+
+        swal({
+            title: 'Connection Received!',
+            text: 'Another player has connected to you.  You may now begin the game.',
+            type: 'success'
+        });
+    },
 
     onReceivedData: function(data) {
         console.dir('RCV: ' + data);
@@ -526,8 +560,10 @@ $(document).ready(function() {
     boardUI.initHeaderElements();
     boardUI.createGrid(boardSize);
     boardUI.createClickHandlers();
+    boardUI.initFooter();
     boardUI.preloadImages();
     PeerLib.setup(multiplayer.apiKey);
     PeerLib.setReceiveHandler(multiplayer.onReceivedData);
+    PeerLib.setRcvConnectionHandler(multiplayer.onConnection);
     board.checkQueryParams();
 });
