@@ -92,7 +92,7 @@ var player = {
         var $clickedCell = $('#box' + i + j);
         var $flagCounter = $('#flagCounter');
 
-        if ($clickedCell.hasClass('flag') && boardUI.isDisabled === false) {
+        if ($clickedCell.hasClass('flag') && !boardUI.isDisabled) {
             $clickedCell.removeClass('flag').text('');
             boardUI.flagCounter++;
             $flagCounter.text(boardUI.flagCounter);
@@ -248,6 +248,8 @@ var board = {
             }
         }
     },
+
+    // Check the query parameters for multiplayer connection
     checkQueryParams: function() {
         var queryParams = this.getQueryParams();
 
@@ -257,6 +259,8 @@ var board = {
             multiplayer.isMultiplayer = true;
         }
     },
+
+    // Method that gets the query parameters from the address bar
     getQueryParams: function() {
 
         var queryString = window.location.search.substring(1); // Gets the query string, drops the ?
@@ -312,7 +316,6 @@ var boardUI = {
                     default:
                         // If cell is flagged, do not reveal cell.
                         if ($('#box' + i + j).hasClass('flag')) {
-                            // Do nothing
                         } else {
                             player.reveal(i, j);
                             if (multiplayer.isMultiplayer) {
@@ -353,9 +356,11 @@ var boardUI = {
             }
         }
     },
+
+    // Initializes the click handlers for the bottom buttons
     initFooter: function() {
         // Help Button
-        $('#helpDialog').off().click(function() {
+        $('#helpDialog').click(function() {
             swal({
                 title: 'How To Play',
                 text: 'Left click to dig up a square.  Right click to flag a mine.<br>' +
@@ -366,14 +371,15 @@ var boardUI = {
         });
 
         // Reset button
-        $('#resetButton').off().click(function() {
+        $('#resetButton').click(function() {
             boardUI.resetGame();
         });
 
         // Link button
-        $('#generateLink').off().click(function() {
+        $('#generateLink').click(function() {
             var friendLink = 'http://rickyeh.com/minesweeper/?id=' + PeerLib.getPeerID();
 
+            // If they game hasn't started yet, show the multiplayer link
             if (player.isFirstTurn) {
                 swal({
                     title: 'Play With A Friend',
@@ -390,13 +396,13 @@ var boardUI = {
                         multiplayer.isMultiplayer = false;
                     }
                 });
-            } else if (multiplayer.isMultiplayer) {
+            } else if (multiplayer.isMultiplayer) {  // If multiplayer mode already enabled, say so.
                 swal({
                     title: 'Oops!',
                     text: 'Multiplayer mode is already enabled.',
                     type: 'info'
                 });
-            } else {
+            } else { // Show error message if game has already begin
                 swal({
                     title: 'Error!',
                     text: 'Sorry, you may only enable multiplayer mode before the game begins. ' +
@@ -407,7 +413,7 @@ var boardUI = {
         });
     },
             
-    // Initializes the fancy select box
+    // Initializes the fancy select box and flag counter
     initHeaderElements: function() {
     var $diffMenu = $('#diffMenu');
 
@@ -497,14 +503,16 @@ var boardUI = {
     }
 };
 
+// Object that holds all the multiplayer related variables and methods
 var multiplayer =  {
+    apiKey : 'p4tiwn62dkt3ayvi',
     isMultiplayer : false,
     connectionExist: false,
-    apiKey : 'p4tiwn62dkt3ayvi',
     rcvRow : 0,
     rcvCol : 0,
     friendLink : '',
 
+    // Method called when an incoming connection is detected
     onConnection: function() {
         multiplayer.connectionExist = true;
 
@@ -515,9 +523,10 @@ var multiplayer =  {
         });
     },
 
+    // Method called when data is received from peer.
     onReceivedData: function(data) {
-        console.dir('RCV: ' + data);
 
+        // When a reset signal is received
         if (data.reset) {
             boardUI.resetGame();
             return;
@@ -538,6 +547,7 @@ var multiplayer =  {
 
         }
 
+        // If click data is received, either reveal or flag.
         if (data.click === 'l'){
             player.reveal(data.row, data.col);
         } else if (data.click === 'r') {
@@ -564,6 +574,6 @@ $(document).ready(function() {
     boardUI.preloadImages();
     PeerLib.setup(multiplayer.apiKey);
     PeerLib.setReceiveHandler(multiplayer.onReceivedData);
-    PeerLib.setRcvConnectionHandler(multiplayer.onConnection);
+    PeerLib.setIncConnectHandler(multiplayer.onConnection);
     board.checkQueryParams();
 });
