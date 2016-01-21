@@ -10,6 +10,7 @@ var player = {
 
     // Method called when player clicks on a cell.  Reveals the cell
     reveal: function(i, j) {
+        console.log(multiplayer.isMultiplayer);
         var $clickedCell = $('#box' + i + j);
 
         // Check if board is disabled by loss/victory.  Do nothing if true.
@@ -257,6 +258,7 @@ var board = {
             queryParams.id = queryParams.id.replace('/',''); // ACCOUNT FOR LOCALHOST SERVER BUG. 
             PeerLib.connect(queryParams.id);
             multiplayer.isMultiplayer = true;
+            multiplayer.connectionExist = true;
         }
     },
 
@@ -515,6 +517,7 @@ var multiplayer =  {
     // Method called when an incoming connection is detected
     onConnection: function() {
         multiplayer.connectionExist = true;
+        multiplayer.isMultiplayer = true;
 
         swal({
             title: 'Connection Received!',
@@ -558,13 +561,13 @@ var multiplayer =  {
 };
 
 // For debugging purposes only.  Remove function after completed project.
-// function revealAll() {
-//     for (var i = 0; i < boardSize; ++i) {
-//         for (var j = 0; j < boardSize; ++j) {
-//             $('#box' + i + j).text(board.gameBoard[i][j]);
-//         }
-//     }
-// }
+function revealAll() {
+    for (var i = 0; i < boardSize; ++i) {
+        for (var j = 0; j < boardSize; ++j) {
+            $('#box' + i + j).text(board.gameBoard[i][j]);
+        }
+    }
+}
 
 $(document).ready(function() {
     boardUI.initHeaderElements();
